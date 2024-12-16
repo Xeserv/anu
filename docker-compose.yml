@@ -35,7 +35,7 @@ services:
       - REGISTRY_AUTH_TOKEN_REALM=http://localhost:5005/auth
       - REGISTRY_AUTH_TOKEN_SERVICE=Authentication
       - REGISTRY_AUTH_TOKEN_ISSUER=Authz
-      - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/mnt/local/certs/RootCA.crt
+      - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/mnt/local/certs/RootCA.pem
     volumes:
       - "./certs:/mnt/local/certs"
     depends_on:

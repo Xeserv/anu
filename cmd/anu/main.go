@@ -17,7 +17,7 @@ import (
 var (
 	bind       = flag.String("bind", ":5007", "TCP host:port to bind to")
 	bucketName = flag.String("bucket-name", "", "bucket to check for access to")
-	certFile   = flag.String("cert-fname", "/mnt/certs/RootCA.crt", "certificate file to validate JSON web tokens with")
+	certFile   = flag.String("cert-fname", "/mnt/certs/RootCA.pem", "certificate file to validate JSON web tokens with")
 	keyFile    = flag.String("key-fname", "/mnt/certs/RootCA.key", "key file to sign JSON web tokens with")
 )
 
@@ -33,7 +33,7 @@ func main() {
 		Certfile:        *certFile,
 		Keyfile:         *keyFile,
 		TokenExpiration: time.Now().Add(24 * time.Hour).Unix(),
-		TokenIssuer:     "Authz",
+		TokenIssuer:     "Tigris Anu",
 		Authenticator:   &httpAuthenticator{},
 	}
 	srv, err := registry.NewAuthServer(opt)
@@ -56,6 +56,7 @@ func (h *httpAuthenticator) Authenticate(ctx context.Context, username, password
 		return fmt.Errorf("can't auth: %w", err)
 	}
 
+	// HACK(Xe): This really should be in the authz step, but this is a HACK and MUST be fixed before shipping to prod for real
 	bucketList, err := cli.ListBuckets(ctx, &s3.ListBucketsInput{})
 	if err != nil {
 		return fmt.Errorf("can't list buckets for auth: %w", err)

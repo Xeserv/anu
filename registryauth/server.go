@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"strings"
 )
@@ -50,6 +51,7 @@ func (srv *AuthServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := srv.authenticator.Authenticate(r.Context(), username, password); err != nil {
+		slog.Error("can't authenticate user", "username", username, "err", err)
 		http.Error(w, "unauthorized: invalid auth credentials", http.StatusUnauthorized)
 		return
 	}
@@ -57,6 +59,7 @@ func (srv *AuthServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	req.Username = username
 	actions, err := srv.authorizer.Authorize(r.Context(), req)
 	if err != nil {
+		slog.Error("can't authorize user", "username", username, "err", err)
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
@@ -64,6 +67,7 @@ func (srv *AuthServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// from the authorization check
 	tk, err := srv.tokenGenerator.Generate(r.Context(), req, actions)
 	if err != nil {
+		slog.Error("can't generate token", "username", username, "err", err)
 		http.Error(w, "server error", http.StatusInternalServerError)
 		return
 	}

@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"log/slog"
 	"net/http"
 	"time"
 
@@ -26,11 +25,13 @@ func main() {
 	flagenv.Parse()
 	flag.Parse()
 
-	crt, key := "/mnt/certs/RootCA.crt", "/mnt/certs/RootCA.key"
+	if *bucketName == "" {
+		log.Fatal("BUCKET_NAME is not set")
+	}
 
 	opt := &registry.Option{
-		Certfile:        "/mnt/certs/RootCA.crt",
-		Keyfile:         "/mnt/certs/RootCA.key",
+		Certfile:        *certFile,
+		Keyfile:         *keyFile,
 		TokenExpiration: time.Now().Add(24 * time.Hour).Unix(),
 		TokenIssuer:     "Authz",
 		Authenticator:   &httpAuthenticator{},
@@ -42,7 +43,7 @@ func main() {
 
 	http.Handle("/auth", srv)
 	log.Println("Server running at ", *bind)
-	if err := http.ListenAndServeTLS(*bind, crt, key, nil); err != nil {
+	if err := http.ListenAndServe(*bind, nil); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -57,21 +58,19 @@ func (h *httpAuthenticator) Authenticate(ctx context.Context, username, password
 
 	bucketList, err := cli.ListBuckets(ctx, &s3.ListBucketsInput{})
 	if err != nil {
-		slog.Error("can't list buckets", "accessKeyID", username, "err", err)
-		return fmt.Errorf("can't auth: %w", err)
+		return fmt.Errorf("can't list buckets for auth: %w", err)
 	}
 
 	var found bool
 
 	for _, bkt := range bucketList.Buckets {
-		if bkt.Name == *&bucketName {
+		if *bkt.Name == *bucketName {
 			found = true
 			break
 		}
 	}
 
 	if !found {
-		slog.Error("can't find matching", "accessKeyID", username, "wantBucket", *bucketName)
 		return fmt.Errorf("user does not have access to bucket %s", *bucketName)
 	}
 

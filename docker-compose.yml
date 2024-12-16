@@ -7,7 +7,7 @@ services:
     container_name: example-server
     restart: on-failure
     environment:
-      - PORT=5007
+      - BUCKET_NAME=registrxe
     ports:
       - 5005:5007
     volumes:
@@ -18,17 +18,27 @@ services:
     image: registry:2
     ports:
       - 5004:5000
+    env_file: ".env.registry"
     environment:
-      - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/data
+      - REGISTRY_STORAGE=s3
+      - REGISTRY_STORAGE_S3_REGION=auto
+      - REGISTRY_STORAGE_S3_REGIONENDPOINT=https://fly.storage.tigris.dev
+      - REGISTRY_STORAGE_S3_FORCEPATHSTYLE=false
+      - REGISTRY_STORAGE_S3_BUCKET=registrxe
+      - REGISTRY_STORAGE_S3_ENCRYPT=false
+      - REGISTRY_STORAGE_S3_SECURE=true
+      - REGISTRY_STORAGE_S3_V4AUTH=true
+      - REGISTRY_STORAGE_S3_CHUNKSIZE=5242880
+      - REGISTRY_STORAGE_S3_ROOTDIRECTORY=/
+      - REGISTRY_HTTP_SECRET=B703E8CE-F2FA-4F2B-A874-CA22088E511E
       - REGISTRY_AUTH=token
-      - REGISTRY_AUTH_TOKEN_REALM=https://localhost:5005/auth
+      - REGISTRY_AUTH_TOKEN_REALM=http://localhost:5005/auth
       - REGISTRY_AUTH_TOKEN_SERVICE=Authentication
       - REGISTRY_AUTH_TOKEN_ISSUER=Authz
       - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/mnt/local/certs/RootCA.crt
       - REGISTRY_HTTP_TLS_CERTIFICATE=/mnt/local/certs/RootCA.crt
       - REGISTRY_HTTP_TLS_KEY=/mnt/local/certs/RootCA.key
     volumes:
-      - "data:/data"
       - "./certs:/mnt/local/certs"
     depends_on:
       - example-server

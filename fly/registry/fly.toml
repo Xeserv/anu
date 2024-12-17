@@ -16,14 +16,12 @@ REGISTRY_STORAGE = "s3"
 REGISTRY_STORAGE_S3_REGION = "auto"
 REGISTRY_STORAGE_S3_REGIONENDPOINT = "https://fly.storage.tigris.dev"
 REGISTRY_STORAGE_S3_FORCEPATHSTYLE = "false"
-REGISTRY_STORAGE_S3_BUCKET = "registrxe"
 REGISTRY_STORAGE_S3_ENCRYPT = "false"
 REGISTRY_STORAGE_S3_SECURE = "true"
 REGISTRY_STORAGE_S3_V4AUTH = "true"
 REGISTRY_STORAGE_S3_CHUNKSIZE = "5242880"
-REGISTRY_STORAGE_S3_ROOTDIRECTORY = "/anu"
+REGISTRY_STORAGE_S3_ROOTDIRECTORY = "/"
 REGISTRY_AUTH = "token"
-REGISTRY_AUTH_TOKEN_REALM = "https://anu.fly.dev/auth"
 REGISTRY_AUTH_TOKEN_SERVICE = "Authentication"
 REGISTRY_AUTH_TOKEN_ISSUER = "Tigris Anu"
 REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE = "/data/anu.pem"
@@ -31,14 +29,13 @@ REGISTRY_HTTP_DEBUG_ADDR = ":5001"
 REGISTRY_HTTP_DEBUG_PROMETHEUS_ENABLED = "true"
 REGISTRY_HTTP_DEBUG_PROMETHEUS_PATH = "/metrics"
 
+[[files]]
+guest_path = "/data/anu.pem"
+secret_name = "JWT_CERT_B64"
+
 [[metrics]]
 port = 5001
 path = "/metrics"
-
-[mounts]
-source = "certs"
-destination = "/data"
-initial_size = "1gb"
 
 [[services]]
 protocol = 'tcp'

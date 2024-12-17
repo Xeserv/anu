@@ -24,8 +24,15 @@ cpus = 1
 [experimental]
 #cmd = ["sleep", "inf"]
 
+[[files]]
+guest_path = "/tmp/anu.pem"
+secret_name = "JWT_CERT_B64"
+
+[[files]]
+guest_path = "/tmp/anu.key"
+secret_name = "JWT_KEY_B64"
+
 [env]
-BUCKET_NAME = "registrxe"
-CERT_FNAME = "/data/anu.pem"
-KEY_FNAME = "/data/anu.key"
+CERT_FNAME = "/tmp/anu.pem"
+KEY_FNAME = "/tmp/anu.key"
 SLOG_LEVEL = "info"

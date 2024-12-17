@@ -32,10 +32,11 @@ func main() {
 	opt := &registry.Option{
 		Certfile:        *certFile,
 		Keyfile:         *keyFile,
-		TokenExpiration: time.Now().Add(24 * time.Hour).Unix(),
+		TokenExpiration: int64((24 * time.Hour).Seconds()),
 		TokenIssuer:     "Tigris Anu",
 		Authenticator:   &httpAuthenticator{},
 	}
+
 	srv, err := registry.NewAuthServer(opt)
 	if err != nil {
 		log.Fatal(err)

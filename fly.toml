@@ -30,5 +30,6 @@ destination = "/data"
 initial_size = "1gb"
 
 [env]
+BUCKET_NAME = "registrxe"
 CERT_FNAME = "/data/anu.pem"
 KEY_FNAME = "/data/anu.key"

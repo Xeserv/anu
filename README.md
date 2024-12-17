@@ -8,34 +8,15 @@ The Tigris-backed Docker Registry. The name comes from the Sumerian god [Anu (ð’
 openssl req -x509 -nodes -new -sha256 -days 36500 -newkey rsa:4096 -keyout anu.key -out anu.pem -subj "/C=US/CN=Registry Auth CA"
 ```
 
-### Loading the anu volume with a keypair
+### Loading the anu app with a keypair
 
-- Add this to `fly.toml`:
+Set the key and certificate as base64-encoded bytes:
 
-  ```toml
-  [experimental]
-  cmd = ["sleep", "inf"]
-  ```
+```sh
+fly secrets set -a anu JWT_CERT_B64="$(cat certs/anu.pem | base64 -w0)" JWT_KEY_B64="$(cat certs/anu.key | base64 -w0)"
+```
 
-- Run `fly deploy`.
-- Open another terminal and run `fly ssh console -a anu`.
-- Copy the contents of `anu.pem` (certificate / public key) to your clipboard.
-- Run `vi /data/anu.pem` in that fly machine.
-- Paste the certificate.
-- Save and quit (:wq).
-- Copy the contents of `anu.key` (private key) to your clipboard.
-- Run `vi /data/anu.key` in that fly machine.
-- Paste the private key.
-- Save and quit (:wq).
-- Exit from the machine.
-- Comment out the `cmd` line in fly.toml:
-
-  ```toml
-  [experimental]
-  #cmd = ["sleep", "inf"]
-  ```
-
-- Run `fly deploy`
+Run this before you deploy Anu for the first time.
 
 ### Loading the registry volume with a keypair
 

@@ -24,11 +24,6 @@ cpus = 1
 [experimental]
 #cmd = ["sleep", "inf"]
 
-[mounts]
-source = "certs"
-destination = "/data"
-initial_size = "1gb"
-
 [env]
 BUCKET_NAME = "registrxe"
 CERT_FNAME = "/data/anu.pem"

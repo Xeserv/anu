@@ -8,7 +8,7 @@ The easiest deployment target for Anu is on [fly.io](https://fly.io), but in the
 
 - An account on [Tigris](https://console.tigris.dev)
 - A [Tigris bucket](https://storage.new) (such as `mybucket`), this is where all your docker images will be stored. This will be called the registry bucket.
-- A keypair with Editor permissions on the registry bucket.
+- A Tigris authentication keypair with Editor permissions on the registry bucket.
 - A machine with the following packages installed (names are what you can find in [Homebrew](https://formulae.brew.sh/)):
   - `openssl`
   - `flyctl`
@@ -69,7 +69,7 @@ Load the certificate into a fly secret:
 fly secrets set -a anu-registry JWT_CERT_B64="$(cat certs/anu.pem | base64 -w0)
 ```
 
-Put the auth endpoint URL, bucket name, access key ID, and secret access key into your registry app's secrets:
+Put the auth endpoint URL, bucket name, the access key ID of the Tigris authentication keypair, and the secret access key of the Tigris authentication keypair into your registry app's secrets:
 
 ```sh
 fly secrets set -a anu-registry \

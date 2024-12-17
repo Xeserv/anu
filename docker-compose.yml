@@ -1,6 +1,3 @@
-volumes:
-  data:
-
 services:
   example-server:
     build: ./
@@ -32,10 +29,11 @@ services:
       - REGISTRY_STORAGE_S3_ROOTDIRECTORY=/anu
       - REGISTRY_HTTP_SECRET=B703E8CE-F2FA-4F2B-A874-CA22088E511E
       - REGISTRY_AUTH=token
+      #- REGISTRY_AUTH_TOKEN_REALM=https://anu.fly.dev/auth
       - REGISTRY_AUTH_TOKEN_REALM=http://localhost:5005/auth
       - REGISTRY_AUTH_TOKEN_SERVICE=Authentication
       - REGISTRY_AUTH_TOKEN_ISSUER=Tigris Anu
-      - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/mnt/local/certs/RootCA.pem
+      - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/mnt/local/certs/anu.pem
     volumes:
       - "./certs:/mnt/local/certs"
     depends_on:

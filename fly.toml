@@ -1,0 +1,34 @@
+# fly.toml app configuration file generated for anu on 2024-12-17T09:08:06-05:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'anu'
+primary_region = 'yul'
+
+[build]
+
+[http_service]
+internal_port = 5007
+force_https = true
+auto_stop_machines = 'stop'
+auto_start_machines = true
+min_machines_running = 0
+processes = ['app']
+
+[[vm]]
+memory = '1gb'
+cpu_kind = 'shared'
+cpus = 1
+
+[experimental]
+#cmd = ["sleep", "inf"]
+
+[mounts]
+source = "certs"
+destination = "/data"
+initial_size = "1gb"
+
+[env]
+CERT_FNAME = "/data/anu.pem"
+KEY_FNAME = "/data/anu.key"

@@ -1,3 +1,5 @@
 certs/*
 .env
 .env.*
+fly.toml
+docker-compose.yml

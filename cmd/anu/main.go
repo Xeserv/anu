@@ -5,11 +5,13 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/facebookgo/flagenv"
+	"github.com/tigrisdata/anu/internal"
 	registry "github.com/tigrisdata/anu/registryauth"
 	"github.com/tigrisdata/anu/tigris"
 )
@@ -19,11 +21,14 @@ var (
 	bucketName = flag.String("bucket-name", "", "bucket to check for access to")
 	certFile   = flag.String("cert-fname", "/mnt/certs/RootCA.pem", "certificate file to validate JSON web tokens with")
 	keyFile    = flag.String("key-fname", "/mnt/certs/RootCA.key", "key file to sign JSON web tokens with")
+	slogLevel  = flag.String("slog-level", "DEBUG", "log level")
 )
 
 func main() {
 	flagenv.Parse()
 	flag.Parse()
+
+	internal.InitSlog(*slogLevel)
 
 	if *bucketName == "" {
 		log.Fatal("BUCKET_NAME is not set")
@@ -43,7 +48,7 @@ func main() {
 	}
 
 	http.Handle("/auth", srv)
-	log.Println("Server running at ", *bind)
+	slog.Info("listening", "bind", *bind)
 	if err := http.ListenAndServe(*bind, nil); err != nil {
 		log.Fatal(err)
 	}
